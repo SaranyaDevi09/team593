@@ -1,0 +1,65 @@
+#include <LiquidCrystal.h>
+#include <SoftwareSerial.h>
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+SoftwareSerial gsmModule(7, 8);
+
+int sensorPin = A0;
+int sensorValue;
+
+void setup() {
+  lcd.begin(16, 2);
+  lcd.print("Air Monitoring");
+  lcd.setCursor(0, 1);
+  lcd.print("System");
+  delay(2000);
+  lcd.clear();
+}
+
+{
+Serial.begin(9600);
+  gsmModule.begin(9600);
+}
+
+void loop() {
+  sensorValue = analogRead(sensorPin);
+  float voltage = sensorValue * (5.0 / 1023.0);
+  float ppm = voltage / 0.1; 
+  
+  lcd.setCursor(0, 0);
+  lcd.print("Gas Concentration:");
+  lcd.setCursor(0, 1);
+  lcd.print(ppm);
+  lcd.print(" ppm    ");
+  delay(1000);
+  lcd.clear();
+}
+{
+SendMessage();
+Serial.print("Gas detect alarm");
+lcd.clear();
+lcd.setCursor(0,0);
+lcd.print("Gas Level Exceed");
+lcd.setCursor(0,1);
+lcd.print("SMS Sent");
+delay(1000);
+}
+void make_multi_call()
+{
+  if(PHONE_1 != ""){
+    Serial.print("Phone 1: ");
+    make_call(PHONE_1);
+    delay(20000);
+  }
+ 
+}
+
+void make_call(String phone)
+{
+    Serial.println("calling....");
+    fona.println("ATD"+phone+";");
+    delay(20000); 
+    fona.println("ATH");
+    delay(1000); 
+}
+ 
